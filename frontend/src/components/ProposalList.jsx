@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 
 const ProposalList = ({ daoContract, voteTokenContract, signer, address }) => {
     const [proposals, setProposals] = useState([]);
+    const [voteInputs, setVoteInputs] = useState({}); // Store token input for quadratic voting
 
     const fetchProposals = async () => {
         if (!daoContract) return;
@@ -35,6 +36,7 @@ const ProposalList = ({ daoContract, voteTokenContract, signer, address }) => {
                     noVotes: ethers.formatEther(p.noVotes),
                     deadline: new Date(Number(p.deadline) * 1000),
                     executed: p.executed,
+                    votingType: p.votingType, // 0 = Weighted, 1 = Quadratic
                     raw: p
                 });
             }
@@ -50,13 +52,24 @@ const ProposalList = ({ daoContract, voteTokenContract, signer, address }) => {
         return () => clearInterval(interval);
     }, [daoContract]);
 
-    const handleVote = async (id, support) => {
+    const handleVote = async (id, support, votingType) => {
         if (!daoContract) return;
         try {
-            const tx = await daoContract.vote(id, support);
+            let tokenAmount = "0";
+            if (votingType == 1) { // Quadratic
+                const input = voteInputs[id];
+                if (!input || parseFloat(input) <= 0) return alert("Please enter token amount to commit!");
+                tokenAmount = ethers.parseEther(input.toString());
+            }
+
+            // In weighted, we just pass 0 or ignored param.
+            // But mock expects it for Quadratic.
+
+            const tx = await daoContract.vote(id, support, tokenAmount);
             await tx.wait();
             alert("Voted!");
             fetchProposals();
+            setVoteInputs({ ...voteInputs, [id]: '' });
         } catch (err) {
             alert("Vote failed: " + err.message);
         }
@@ -81,7 +94,12 @@ const ProposalList = ({ daoContract, voteTokenContract, signer, address }) => {
             {proposals.map(p => (
                 <div key={p.id} className="card">
                     <div className="flex-row">
-                        <h3>{p.title}</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <h3>{p.title}</h3>
+                            <span style={{ fontSize: '0.7em', padding: '2px 8px', border: '1px solid var(--color-primary)', borderRadius: '4px' }}>
+                                {p.votingType == 1 ? "⚡ Quadratic" : "⚖️ Weighted"}
+                            </span>
+                        </div>
                         <span className={p.executed ? "badge badge-green" : "badge"}>
                             {p.executed ? "Executed" : (p.deadline < new Date() ? "Ended" : "Active")}
                         </span>
@@ -105,12 +123,30 @@ const ProposalList = ({ daoContract, voteTokenContract, signer, address }) => {
                         </div>
                     </div>
 
-                    <div className="flex-row" style={{ marginTop: '1rem', gap: '10px' }}>
-                        <button onClick={() => handleVote(p.id, true)} disabled={p.executed || p.deadline < new Date()}>Vote YES</button>
-                        <button onClick={() => handleVote(p.id, false)} disabled={p.executed || p.deadline < new Date()} style={{ background: 'var(--color-surface)' }}>Vote NO</button>
-                        {!p.executed && p.deadline < new Date() && (
-                            <button onClick={() => handleExecute(p.id)}>Execute</button>
+                    <div className="flex-row" style={{ marginTop: '1rem', gap: '10px', alignItems: 'flex-end' }}>
+                        {p.votingType == 1 && !p.executed && p.deadline > new Date() && (
+                            <div style={{ flex: 1 }}>
+                                <label style={{ fontSize: '0.8em', color: 'var(--color-text-dim)' }}>Tokens to Commit:</label>
+                                <input
+                                    type="number"
+                                    placeholder="Ex: 100 Tokens"
+                                    value={voteInputs[p.id] || ''}
+                                    onChange={(e) => setVoteInputs({ ...voteInputs, [p.id]: e.target.value })}
+                                    style={{ marginBottom: 0 }}
+                                />
+                                <div style={{ fontSize: '0.7em', color: 'var(--color-primary)' }}>
+                                    Resulting Power: {voteInputs[p.id] ? Math.sqrt(parseFloat(voteInputs[p.id])).toFixed(2) : '0'}
+                                </div>
+                            </div>
                         )}
+
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button onClick={() => handleVote(p.id, true, p.votingType)} disabled={p.executed || p.deadline < new Date()}>Vote YES</button>
+                            <button onClick={() => handleVote(p.id, false, p.votingType)} disabled={p.executed || p.deadline < new Date()} style={{ background: 'var(--color-surface)' }}>Vote NO</button>
+                            {!p.executed && p.deadline < new Date() && (
+                                <button onClick={() => handleExecute(p.id)}>Execute</button>
+                            )}
+                        </div>
                     </div>
                 </div>
             ))}

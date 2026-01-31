@@ -10,49 +10,120 @@ function App() {
   const [address, setAddress] = useState(null);
 
   // Mock Contract Objects for UI Demo
+  // Mock Config
+  const [mockConfig, setMockConfig] = useState({
+    minTokens: 100, // 100 mock tokens
+    fee: 0.01 // ETH
+  });
+
+  const mockTokenContract = {
+    balanceOf: async (addr) => {
+      // Check local storage for mock balance
+      const balances = JSON.parse(localStorage.getItem('balances') || '{}');
+      return BigInt(balances[addr] || "0");
+    },
+    mint: async (addr, amount) => {
+      const balances = JSON.parse(localStorage.getItem('balances') || '{}');
+      const current = BigInt(balances[addr] || "0");
+      balances[addr] = (current + amount).toString();
+      localStorage.setItem('balances', JSON.stringify(balances));
+      return { wait: async () => Promise.resolve() };
+    }
+  };
+
   const mockDaoContract = {
-    createProposal: async (ipfs, amount, recipient, duration) => {
-      console.log("Mock Create:", ipfs, amount, recipient);
-      // Add to local storage for demo
+    // Config
+    config: async () => {
+      return {
+        minTokensToPropose: BigInt(mockConfig.minTokens * 1e18),
+        proposalFee: ethers.parseEther(mockConfig.fee.toString()),
+        feeRefundable: true
+      };
+    },
+
+    createProposal: async (ipfs, amount, recipient, duration, votingType, feeValue) => {
+      console.log("Mock Create:", ipfs, amount, recipient, votingType, feeValue);
+
+      // 1. Check Threshold (Mock Balance Check)
+      // Since we don't track user balance in contract state here, we rely on Frontend to assume checking.
+      // But actually, we should implement a Mock Token Balance in App state to make this realistic!
+      // Let's assume the user has balance. We will fail if balance < minTokens.
+      const currentBalance = parseFloat(ethers.formatEther(await mockTokenContract.balanceOf(address)));
+      if (currentBalance < mockConfig.minTokens) {
+        throw new Error("Insufficient tokens to propose (Min: " + mockConfig.minTokens + ")");
+      }
+
+      // 2. Check Fee
+      // In mock, feeValue is a prompt.
+      if (parseFloat(ethers.formatEther(feeValue)) < mockConfig.fee) {
+        throw new Error("Insufficient Proposal Fee (Req: " + mockConfig.fee + " ETH)");
+      }
+
       const current = JSON.parse(localStorage.getItem('proposals') || '[]');
       current.push({
         id: current.length,
         ipfsHash: ipfs,
-        amount, // amount is already a BigInt from ethers parsing? No, ethers.parseEther returns BigInt.
-        // Wait, if amount is BigInt, we need to stringify it too!
+        amount: amount.toString(),
         recipient,
         yesVotes: "0",
         noVotes: "0",
         deadline: (Math.floor(Date.now() / 1000) + duration).toString(),
-        executed: false
+        executed: false,
+        votingType: votingType, // 0 = Weighted, 1 = Quadratic
+        feePaid: feeValue.toString(),
+        proposer: address
       });
-      // We must handle 'amount' which comes in as BigInt from ProposalForm
-      const stored = current.map(p => ({
-        ...p,
-        amount: p.amount.toString()
-      }));
-      localStorage.setItem('proposals', JSON.stringify(stored));
+      localStorage.setItem('proposals', JSON.stringify(current));
       return { wait: async () => Promise.resolve() };
     },
-    vote: async (id, support) => {
-      console.log("Mock Vote:", id, support);
+
+    vote: async (id, support, tokenAmount) => {
+      console.log("Mock Vote:", id, support, tokenAmount);
       const current = JSON.parse(localStorage.getItem('proposals') || '[]');
-      if (current[id]) {
-        if (support) {
-          const val = BigInt(current[id].yesVotes || "0") + BigInt("100000000000000000000");
-          current[id].yesVotes = val.toString();
+      const proposal = current[id];
+
+      if (proposal) {
+        let weight = BigInt(0);
+
+        // Mock Token Balance
+        const balance = await mockTokenContract.balanceOf(address);
+
+        if (proposal.votingType == 1) {
+          // Quadratic
+          // Logic: Weight = Sqrt(Tokens Used)
+          // We simulate transfer by just calculating sqrt
+          // const tokensUsed = BigInt(tokenAmount); // Input from UI?
+          // For MVP UI, let's assume "Use All Balance" or input. 
+          // In App.jsx mock, let's accept tokenAmount arg.
+          const used = BigInt(tokenAmount);
+          // Sqrt approximation for BigInt
+          // Simplistic: Math.sqrt(Number(used)) -- unsafe for huge numbers but ok for mock
+          const val = Math.sqrt(Number(ethers.formatEther(used)));
+          // Scale back up? No, weight is just raw count.
+          // Wait, standard Q-voting: 1 token = 1 credit. 
+          // if I use 100 tokens, I get 10 votes.
+          weight = BigInt(Math.floor(val) * 1e18); // giving 18 decimals back to "votes"
         } else {
-          const val = BigInt(current[id].noVotes || "0") + BigInt("50000000000000000000");
-          current[id].noVotes = val.toString();
+          // Weighted
+          weight = balance;
+        }
+
+        if (support) {
+          current[id].yesVotes = (BigInt(current[id].yesVotes || "0") + weight).toString();
+        } else {
+          current[id].noVotes = (BigInt(current[id].noVotes || "0") + weight).toString();
         }
         localStorage.setItem('proposals', JSON.stringify(current));
       }
       return { wait: async () => Promise.resolve() };
     },
+
     execute: async (id) => {
       const current = JSON.parse(localStorage.getItem('proposals') || '[]');
       if (current[id]) {
         current[id].executed = true;
+        // Mock Refund
+        console.log("Mock Execute: Refunding fee if passed...");
         localStorage.setItem('proposals', JSON.stringify(current));
       }
       return { wait: async () => Promise.resolve() };
@@ -108,13 +179,14 @@ function App() {
 
             <ProposalForm
               daoContract={mockDaoContract}
-              voteTokenContract={null}
+              voteTokenContract={mockTokenContract}
               signer={signer}
+              address={address}
             />
 
             <ProposalList
               daoContract={mockDaoContract}
-              voteTokenContract={null}
+              voteTokenContract={mockTokenContract}
               signer={signer}
               address={address}
             />

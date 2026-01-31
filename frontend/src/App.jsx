@@ -3,11 +3,13 @@ import { ethers } from 'ethers'
 import WalletConnect from './components/WalletConnect'
 import ProposalForm from './components/ProposalForm'
 import ProposalList from './components/ProposalList'
+import VoterDashboard from './components/VoterDashboard'
 import './index.css'
 
 function App() {
   const [signer, setSigner] = useState(null);
   const [address, setAddress] = useState(null);
+  const [activeTab, setActiveTab] = useState('proposals'); // 'proposals' or 'dashboard'
 
   // Mock Contract Objects for UI Demo
   // Mock Config
@@ -168,33 +170,48 @@ function App() {
 
         {signer && (
           <>
-            <div className="card">
-              <h2>Dashboard</h2>
-              <p style={{ marginBottom: '1rem' }}>
-                Welcome back, <code>{address.slice(0, 6)}...{address.slice(-4)}</code>.
-                <br />
+            <div className="card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <p style={{ margin: 0 }}>Logged in as: <code>{address.slice(0, 6)}...{address.slice(-4)}</code></p>
                 <small style={{ color: 'orange' }}>Demo Mode: Contracts are simulated.</small>
-              </p>
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={() => setActiveTab('proposals')}
+                  style={{ background: activeTab === 'proposals' ? 'var(--color-primary)' : 'var(--color-surface)' }}
+                >
+                  Proposals
+                </button>
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  style={{ background: activeTab === 'dashboard' ? 'var(--color-primary)' : 'var(--color-surface)' }}
+                >
+                  📊 Voter Dashboard
+                </button>
+              </div>
             </div>
 
-            <ProposalForm
-              daoContract={mockDaoContract}
-              voteTokenContract={mockTokenContract}
-              signer={signer}
-              address={address}
-            />
-
-            <ProposalList
-              daoContract={mockDaoContract}
-              voteTokenContract={mockTokenContract}
-              signer={signer}
-              address={address}
-            />
+            {activeTab === 'proposals' ? (
+              <>
+                <ProposalForm
+                  daoContract={mockDaoContract}
+                  voteTokenContract={mockTokenContract}
+                  signer={signer}
+                  address={address}
+                />
+              </>
+            ) : (
+              <VoterDashboard
+                daoContract={mockDaoContract}
+                voteTokenContract={mockTokenContract}
+                address={address}
+                signer={signer}
+              />
+            )}
           </>
         )}
       </main>
     </div>
   )
 }
-
 export default App

@@ -31,6 +31,47 @@ app.post('/analyze', (req, res) => {
     });
 });
 
+// Mock Historical Data
+const HISTORICAL_DATA = [
+    { type: 'workshop', avgBudget: 3000, avgAttendees: 50, semester: 'Fall 2024' },
+    { type: 'hackathon', avgBudget: 15000, avgAttendees: 200, semester: 'Spring 2024' },
+    { type: 'seminar', avgBudget: 1000, avgAttendees: 30, semester: 'Fall 2024' }
+];
+
+app.post('/api/ai/proposal-comparison', (req, res) => {
+    const { title, amount, description } = req.body;
+    const amountVal = parseFloat(amount);
+
+    // Simple classification based on title/desc keywords
+    const text = (title + " " + description).toLowerCase();
+    let match = HISTORICAL_DATA.find(d => text.includes(d.type));
+
+    if (!match) {
+        // Default fallback if no keyword match
+        match = { type: 'general event', avgBudget: 5000, semester: 'Previous Semesters' };
+    }
+
+    let insight = "";
+    let confidence = 0.85;
+
+    // Budget Comparison
+    const diff = ((amountVal - match.avgBudget) / match.avgBudget) * 100;
+
+    if (diff > 20) {
+        insight = `Similar ${match.type}s in ${match.semester} averaged ${Math.abs(diff.toFixed(0))}% lower budgets. Checked against ${match.avgAttendees} avg attendees.`;
+    } else if (diff < -20) {
+        insight = `This request is ${Math.abs(diff.toFixed(0))}% lower than similar ${match.type}s from ${match.semester}.`;
+    } else {
+        insight = `Budget is within standard range for ${match.type}s seen in ${match.semester}.`;
+    }
+
+    res.json({
+        insight,
+        confidence,
+        matchType: match.type
+    });
+});
+
 app.listen(port, () => {
     console.log(`AI Service running on http://localhost:${port}`);
 });

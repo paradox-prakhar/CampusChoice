@@ -1,0 +1,8 @@
+node_modules
+.env
+dist
+artifacts
+cache
+coverage
+.DS_Store
+.gemini

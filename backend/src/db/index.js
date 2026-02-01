@@ -39,11 +39,14 @@ module.exports = {
         tags: params[3] || [],
         status: 'VOTING',
         vote_count: 0,
-        vote_end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        // Set to 2 minutes for testing/demo purposes as requested
+        vote_end: new Date(Date.now() + 2 * 60 * 1000).toISOString(),
         amount: params[4] || '',
         recipient: params[5] || '',
         duration: params[6] || 0,
         voting_model: params[7] || 'TOKEN_WEIGHTED',
+        venue: params[8] || '',
+        host: params[9] || '',
         created_at: new Date().toISOString()
       };
       storage.proposals.set(id, proposal);
@@ -53,6 +56,13 @@ module.exports = {
     // Handle SELECT * FROM proposals
     if (queryLower.includes('select * from proposals')) {
       const proposals = Array.from(storage.proposals.values());
+      
+      // Handle ID filter
+      if (queryLower.includes('where id =')) {
+         const id = params[0];
+         return { rows: proposals.filter(p => p.id === id) };
+      }
+
       // Handle status filter
       if (params && params[0]) {
         return { rows: proposals.filter(p => p.status === params[0]) };

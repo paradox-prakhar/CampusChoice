@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Proposal } from '../types';
 import { useApp } from '../context/AppContext';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 import { formatAddress } from '../lib/utils';
-import { Clock, ThumbsUp, ThumbsDown, Tag } from 'lucide-react';
+import { Clock, ThumbsUp, ThumbsDown, Tag, MapPin, User as UserIcon } from 'lucide-react';
 
 interface ProposalCardProps {
   proposal: Proposal;
@@ -11,7 +12,32 @@ interface ProposalCardProps {
 
 export function ProposalCard({ proposal }: ProposalCardProps) {
   const { voteOnProposal, user, isLoading } = useApp();
-  
+  const [timeLeft, setTimeLeft] = useState<string>("");
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+        const now = new Date().getTime();
+        const end = new Date(proposal.vote_end).getTime();
+        const distance = end - now;
+
+        if (distance < 0) {
+            setTimeLeft("Ended");
+            setIsExpired(true);
+            return;
+        }
+
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        setTimeLeft(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+        setIsExpired(false);
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+    return () => clearInterval(timer);
+  }, [proposal.vote_end]);
+
   const statusColor = {
       'DRAFT': 'secondary',
       'SUBMITTED': 'warning',
@@ -20,14 +46,18 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
       'ARCHIVED': 'outline'
   } as const;
 
+  const displayStatus = isExpired && proposal.status === 'VOTING' ? 'ENDED' : proposal.status;
+
   return (
     <div className="group relative bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-indigo-500/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col h-full">
       <div className="flex justify-between items-start mb-3">
         <Badge variant={statusColor[proposal.status] || 'default'}>
-            {proposal.status}
+            {displayStatus}
         </Badge>
         <span className="text-xs text-slate-500 flex items-center gap-1 font-mono">
            <Clock className="w-3 h-3" />
+           <span className={isExpired ? "text-red-400" : "text-indigo-400"}>{timeLeft}</span>
+           <span className="text-slate-600">|</span>
            {new Date(proposal.vote_end).toLocaleDateString()}
         </span>
       </div>
@@ -38,6 +68,24 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
       <p className="text-slate-400 text-sm mb-4 line-clamp-2 flex-grow">
         {proposal.description}
       </p>
+
+      {/* Venue and Host Details */}
+      {(proposal.venue || proposal.host) && (
+        <div className="flex flex-col gap-1 mb-4 text-xs text-slate-400 bg-slate-900/30 p-2 rounded-lg">
+            {proposal.venue && (
+                <div className="flex items-center gap-2">
+                    <MapPin className="w-3 h-3 text-indigo-400" />
+                    <span>{proposal.venue}</span>
+                </div>
+            )}
+            {proposal.host && (
+                <div className="flex items-center gap-2">
+                    <UserIcon className="w-3 h-3 text-purple-400" />
+                    <span>Host: {proposal.host}</span>
+                </div>
+            )}
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2 mb-4">
         {proposal.tags.map(tag => (
@@ -61,7 +109,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
              <span className="font-bold text-indigo-400">{proposal.vote_count}</span>
           </div>
 
-        {proposal.status === 'VOTING' && user && (
+        {proposal.status === 'VOTING' && user && !isExpired && (
           <div className="flex gap-2">
             <Button 
                 size="sm" 
@@ -85,6 +133,12 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
                 <ThumbsDown className="w-4 h-4 mr-1" /> No
             </Button>
           </div>
+        )}
+        
+        {isExpired && (
+             <div className="text-center p-2 bg-slate-800 rounded-lg border border-slate-700 text-slate-400 text-sm">
+                Voting Ended
+             </div>
         )}
       </div>
     </div>

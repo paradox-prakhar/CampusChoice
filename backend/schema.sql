@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS proposals (
   status TEXT DEFAULT 'DRAFT', -- DRAFT, VOTING, APPROVED, ARCHIVED
   vote_count INT DEFAULT 0,
   vote_end TIMESTAMP,
+  venue TEXT,
+  host TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );
 

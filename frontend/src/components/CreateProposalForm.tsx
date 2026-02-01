@@ -15,7 +15,9 @@ export function CreateProposalForm() {
     recipient: '',
     duration: '3600',
     voting_model: 'TOKEN_WEIGHTED',
-    tags: ''
+    tags: '',
+    venue: '',
+    host: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +31,9 @@ export function CreateProposalForm() {
         recipient: formData.recipient,
         duration: Number(formData.duration),
         voting_model: formData.voting_model,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+        venue: formData.venue,
+        host: formData.host
     });
     
     navigate('/dashboard');
@@ -107,6 +111,28 @@ export function CreateProposalForm() {
                         className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder:text-slate-600"
                         value={formData.recipient}
                         onChange={e => setFormData({...formData, recipient: e.target.value})}
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300">Venue</label>
+                    <input 
+                        type="text" 
+                        placeholder="e.g. Main Auditorium"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder:text-slate-600"
+                        value={formData.venue}
+                        onChange={e => setFormData({...formData, venue: e.target.value})}
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300">Host / Organizer</label>
+                    <input 
+                        type="text" 
+                        placeholder="e.g. Student Council"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder:text-slate-600"
+                        value={formData.host}
+                        onChange={e => setFormData({...formData, host: e.target.value})}
                     />
                 </div>
 

@@ -19,6 +19,8 @@ export interface Proposal {
   status: "DRAFT" | "SUBMITTED" | "VOTING" | "APPROVED" | "ARCHIVED";
   vote_count: number;
   vote_end: string; // ISO timestamp
+  venue?: string;
+  host?: string;
   created_at: string;
 }
 

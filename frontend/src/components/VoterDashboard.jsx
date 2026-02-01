@@ -29,7 +29,8 @@ const VoterDashboard = ({ daoContract, voteTokenContract, address, signer, onNot
 
                 let currentStage = 'SUBMITTED';
                 if (!p.executed && deadline > now) currentStage = 'VOTING';
-                if (!p.executed && deadline <= now && p.yesVotes > p.noVotes) currentStage = 'APPROVED';
+                if (!p.executed && deadline <= now) currentStage = 'EXECUTED'; 
+                // Note: Simplified logic as requested. If expired, move to Executed/Ended view.
                 if (p.executed) currentStage = 'EXECUTED';
 
                 loaded.push({
@@ -153,6 +154,18 @@ const VoterDashboard = ({ daoContract, voteTokenContract, address, signer, onNot
                                         </span>
                                         <span>•</span>
                                         <span>Request: <span className="text-white font-medium">{selectedProposal.amount} ETH</span></span>
+                                        {selectedProposal.venue && (
+                                            <>
+                                                <span>•</span>
+                                                <span className="text-slate-400">📍 {selectedProposal.venue}</span>
+                                            </>
+                                        )}
+                                        {selectedProposal.host && (
+                                            <>
+                                                <span>•</span>
+                                                <span className="text-slate-400">🎤 {selectedProposal.host}</span>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 {selectedProposal.currentStage === 'VOTING' && (

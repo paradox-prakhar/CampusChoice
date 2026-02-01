@@ -21,6 +21,14 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'User has already voted on this proposal' });
     }
 
+    // 1.5 Check if proposal expired
+    const props = await db.query('SELECT * FROM proposals WHERE id = $1', [proposal_id]);
+    if (props.rows.length === 0) return res.status(404).json({ error: 'Proposal not found' });
+    const proposal = props.rows[0];
+    if (new Date() > new Date(proposal.vote_end)) {
+        return res.status(400).json({ error: 'Voting period has ended' });
+    }
+
     // 2. Insert vote
     await db.query(
       'INSERT INTO votes (proposal_id, voter_wallet) VALUES ($1, $2)',

@@ -41,9 +41,9 @@ router.post('/', async (req, res) => {
 
     const { rows } = await db.query(
       `INSERT INTO proposals (title, description, proposer_wallet, tags, status, vote_end, amount, recipient, duration, voting_model)
-       VALUES ($1, $2, $3, $4, 'VOTING', NOW() + INTERVAL '7 days', $5, $6, $7, $8)
+       VALUES ($1, $2, $3, $4, 'VOTING', NOW() + INTERVAL '2 minutes', $5, $6, $7, $8, $9, $10)
        RETURNING *`,
-      [title, description, proposer_wallet, tags || [], req.body.amount, req.body.recipient, req.body.duration, req.body.voting_model]
+      [title, description, proposer_wallet, tags || [], req.body.amount, req.body.recipient, req.body.duration, req.body.voting_model, req.body.venue, req.body.host]
     );
     
     res.status(201).json(rows[0]);

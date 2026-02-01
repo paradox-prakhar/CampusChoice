@@ -9,7 +9,7 @@ interface AppContextType {
   isLoading: boolean;
   connectWallet: (intendedRole?: string) => Promise<void>;
   disconnectWallet: () => void;
-  createProposal: (data: { title: string, description: string, tags: string[], amount: string, recipient: string, duration: number, voting_model: string }) => Promise<void>;
+  createProposal: (data: { title: string, description: string, tags: string[], amount: string, recipient: string, duration: number, voting_model: string, venue?: string, host?: string }) => Promise<void>;
   voteOnProposal: (id: string) => Promise<void>;
   notifications: any[]; // Keep mock for UI consistency if needed
   votingTimeRemaining: number;
@@ -115,7 +115,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('connected_wallet');
   };
 
-  const createProposal = async (data: { title: string, description: string, tags: string[], amount: string, recipient: string, duration: number, voting_model: string }) => {
+  const createProposal = async (data: { title: string, description: string, tags: string[], amount: string, recipient: string, duration: number, voting_model: string, venue?: string, host?: string }) => {
     if (!user) return;
     setIsLoading(true);
     try {

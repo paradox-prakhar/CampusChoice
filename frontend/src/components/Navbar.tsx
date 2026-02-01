@@ -1,17 +1,40 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Button } from './ui/Button';
 import { Wallet, LogOut, Bell, Plus, LayoutDashboard } from 'lucide-react';
 import { formatAddress } from '../lib/utils';
 
+import { useState } from 'react';
+import { ConnectPurposeModal } from './ConnectPurposeModal';
+
 export function Navbar() {
   const { user, connectWallet, disconnectWallet, notifications, isLoading } = useApp();
   const location = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleConnectPurpose = async (purpose: 'VOTE' | 'PROPOSE') => {
+    setIsModalOpen(false);
+    await connectWallet(purpose === 'PROPOSE' ? 'PROPOSER' : undefined);
+    
+    setTimeout(() => {
+        if (purpose === 'PROPOSE') {
+            navigate('/create');
+        } else {
+            navigate('/dashboard');
+        }
+    }, 100);
+  };
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+      <ConnectPurposeModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSelect={handleConnectPurpose} 
+      />
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           {/* CampusChoice Logo */}
@@ -65,7 +88,7 @@ export function Navbar() {
             </div>
           </div>
         ) : (
-          <Button onClick={() => connectWallet()} isLoading={isLoading}>
+          <Button onClick={() => setIsModalOpen(true)} isLoading={isLoading}>
             <Wallet className="w-4 h-4 mr-2" />
             Connect Wallet
           </Button>

@@ -74,7 +74,7 @@ export function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">How It Works</h2>
             <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              VibeCraft DAO empowers students to democratically decide campus events through blockchain technology
+              CampusChoice empowers students to democratically decide campus events through blockchain technology
             </p>
           </div>
 

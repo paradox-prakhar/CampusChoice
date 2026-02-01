@@ -1,9 +1,5 @@
 # **CampusChoice**
 
-![VibeCraft DAO Banner](/frontend/public/vite.svg)
-
-**Live Demo:** [https://campuschoice.vercel.app](https://campuschoice.vercel.app?_vercel_share=pMKch91FHQoeamksiA2ZuL9cWrkwXpIM)
-
 ## 🚀 Overview
 
 VibeCraft DAO (CampusChoice) is a decentralized platform that empowers students to democratically decide on campus events through blockchain technology. By leveraging quadratic voting, we ensure fair representation and prevent plutocracy, giving every student a meaningful voice in how university funds are allocated.
@@ -12,7 +8,7 @@ VibeCraft DAO (CampusChoice) is a decentralized platform that empowers students 
 
 -   **Quadratic Voting:** A revolutionary voting mechanism where voting power is the square root of tokens committed, ensuring fairer influence.
 -   **Decentralized Governance:** All proposals and votes are recorded on-chain for transparency and immutability.
--   **Proposal Creation:** Students can submit detailed event proposals including budget, timeline, and description.
+-   **Proposal Creation:** Students can submit detailed event proposals, including budget, timeline, and description.
 -   **AI-Powered Insights:** (Optional) Smart analysis features to help users craft better proposals.
 -   **Real-time Dashboard:** Interactive dashboard to track active proposals, voting status, and treasury funds.
 -   **Wallet Connection:** Seamless integration with MetaMask (and mock wallet support for testing).
@@ -20,16 +16,19 @@ VibeCraft DAO (CampusChoice) is a decentralized platform that empowers students 
 ## � Screenshots
 
  Landing Page  
-|<img width="1897" height="933" alt="image" src="https://github.com/user-attachments/assets/94923d4e-3da0-4167-bbde-f7555189c6b7" />
-|Dashboard 
-|<img width="1111" height="842" alt="image" src="https://github.com/user-attachments/assets/e8fb018d-0c8c-46cf-b4ba-67924777835c" />
+
+<img width="1897" height="933" alt="image" src="https://github.com/user-attachments/assets/94923d4e-3da0-4167-bbde-f7555189c6b7" />
+
+**Dashboard**
+
+<img width="1111" height="842" alt="image" src="https://github.com/user-attachments/assets/e8fb018d-0c8c-46cf-b4ba-67924777835c" />
+
+**Proposal Creation**
+
+<img width="550" height="946" alt="image" src="https://github.com/user-attachments/assets/c43db505-2419-4ce0-8d75-39e30055b900" />
 
 
-
-| Proposal Creation | 
-|<img width="550" height="946" alt="image" src="https://github.com/user-attachments/assets/c43db505-2419-4ce0-8d75-39e30055b900" />
-
-| ![Proposal Form](/frontend/src/assets/campuschoice-logo.png) | ![Voting](/frontend/src/assets/campuschoice-logo.png) |
+**Live Demo:** [https://campuschoice.vercel.app](https://campuschoice.vercel.app?_vercel_share=pMKch91FHQoeamksiA2ZuL9cWrkwXpIM)
 
 ## �🛠️ Tech Stack
 

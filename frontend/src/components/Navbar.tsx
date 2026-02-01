@@ -8,9 +8,10 @@ import { useState } from 'react';
 import { ConnectPurposeModal } from './ConnectPurposeModal';
 
 export function Navbar() {
-  const { user, connectWallet, disconnectWallet, notifications, isLoading } = useApp();
+  const { user, connectWallet, disconnectWallet, notifications, isLoading, network, setNetwork } = useApp();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleConnectPurpose = async (purpose: 'VOTE' | 'PROPOSE') => {
@@ -74,6 +75,41 @@ export function Navbar() {
                     <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse ring-2 ring-slate-900"></span>
                   )}
                </div>
+
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
+                    <span className="text-xs font-medium text-slate-200">
+                      {network === 'quai-cyprus1' ? 'Quai Cyprus-1' : network === 'quai-orchard' ? 'Quai Orchard' : 'Sepolia'}
+                    </span>
+                  </button>
+
+                  {isNetworkDropdownOpen && (
+                    <div className="absolute top-full mt-2 right-0 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+                      <button 
+                        onClick={() => { setNetwork('quai-cyprus1'); setIsNetworkDropdownOpen(false); }}
+                        className="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                      >
+                        Quai Network Cyprus-1
+                      </button>
+                      <button 
+                        onClick={() => { setNetwork('quai-orchard'); setIsNetworkDropdownOpen(false); }}
+                        className="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                      >
+                        Quai Orchard Testnet
+                      </button>
+                      <button 
+                        onClick={() => { setNetwork('sepolia'); setIsNetworkDropdownOpen(false); }}
+                        className="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                      >
+                        Sepolia Testnet
+                      </button>
+                    </div>
+                  )}
+                </div>
 
                <div className="flex flex-col items-end hidden sm:flex">
                   <span className="text-xs text-slate-400 font-mono">{formatAddress(user.wallet)}</span>

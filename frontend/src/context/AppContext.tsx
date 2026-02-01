@@ -16,6 +16,8 @@ interface AppContextType {
   executionStatus: 'PENDING' | 'EXECUTED';
   executeProposals: () => void;
   winner: Proposal | null;
+  network: string;
+  setNetwork: (network: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -31,6 +33,62 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [executionStatus, setExecutionStatus] = useState<'PENDING' | 'EXECUTED'>('PENDING');
   const [winner, setWinner] = useState<Proposal | null>(null);
   const [isVotingActive, setIsVotingActive] = useState(false);
+  const [network, setNetwork] = useState<string>('quai-cyprus1');
+
+  const NETWORKS: Record<string, any> = {
+    'quai-cyprus1': {
+      chainId: '0x9', // 9 decimal
+      chainName: 'Quai Network Cyprus-1',
+      nativeCurrency: { name: 'QUAI', symbol: 'QUAI', decimals: 18 },
+      rpcUrls: ['https://rpc.quai.network/cyprus1'],
+      blockExplorerUrls: ['https://quaiscan.io'],
+    },
+    'quai-orchard': {
+      chainId: '0x3a98', // 15000 decimal
+      chainName: 'Quai Orchard Testnet Cyprus-1',
+      nativeCurrency: { name: 'QUAI', symbol: 'QUAI', decimals: 18 },
+      rpcUrls: ['https://orchard.rpc.quai.network/cyprus1'],
+      blockExplorerUrls: ['https://orchard.quaiscan.io'],
+    },
+    'sepolia': {
+      chainId: '0xaa36a7', // 11155111 decimal
+      chainName: 'Sepolia Test Network',
+      nativeCurrency: { name: 'SepoliaETH', symbol: 'ETH', decimals: 18 },
+      rpcUrls: ['https://sepolia.infura.io/v3/'],
+      blockExplorerUrls: ['https://sepolia.etherscan.io'],
+    }
+  };
+
+  const switchNetwork = async (networkKey: string) => {
+    if (!window.ethereum) return;
+    const net = NETWORKS[networkKey];
+    if (!net) return;
+
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: net.chainId }],
+      });
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [net],
+          });
+        } catch (addError) {
+          console.error("Failed to add network", addError);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (user && network) {
+        switchNetwork(network);
+    }
+  }, [network, user]);
 
   useEffect(() => {
     if (isVotingActive && votingTimeRemaining > 0 && executionStatus === 'PENDING') {
@@ -169,7 +227,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       votingTimeRemaining,
       executionStatus,
       executeProposals,
-      winner
+      winner,
+      network,
+      setNetwork
     }}>
       {children}
     </AppContext.Provider>

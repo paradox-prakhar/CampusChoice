@@ -17,21 +17,18 @@ VibeCraft DAO (CampusChoice) is a decentralized platform that empowers students 
 -   **Real-time Dashboard:** Interactive dashboard to track active proposals, voting status, and treasury funds.
 -   **Wallet Connection:** Seamless integration with MetaMask (and mock wallet support for testing).
 
-## � Screenshots
+## 📸 Screenshots
 
-| Landing Page | Dashboard |
-|:---:|:---:|
-| ![Landing Page](/frontend/src/assets/campuschoice-logo.png) | ![Dashboard](/frontend/src/assets/campuschoice-logo.png) |
-| *Modern Landing Page* | *Interactive Voter Dashboard* |
+### Landing Page
+<img width="100%" alt="Landing Page" src="https://github.com/user-attachments/assets/94923d4e-3da0-4167-bbde-f7555189c6b7" />
 
-| Proposal Creation | Voting Flow |
-|:---:|:---:|
-| ![Proposal Form](/frontend/src/assets/campuschoice-logo.png) | ![Voting](/frontend/src/assets/campuschoice-logo.png) |
-| *Create Event Proposals* | *Quadratic Voting in Action* |
+### Dashboard
+<img width="100%" alt="Dashboard" src="https://github.com/user-attachments/assets/e8fb018d-0c8c-46cf-b4ba-67924777835c" />
 
-> *Note: Please replace the placeholder paths above with actual screenshot files in your repository.*
+### Proposal Creation
+<img width="50%" alt="Proposal Creation" src="https://github.com/user-attachments/assets/c43db505-2419-4ce0-8d75-39e30055b900" />
 
-## �🛠️ Tech Stack
+## 🛠️ Tech Stack
 
 -   **Frontend:** React, TypeScript, Vite, Tailwind CSS
 -   **Backend:** Node.js, Express

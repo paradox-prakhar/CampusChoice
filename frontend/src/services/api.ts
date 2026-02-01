@@ -1,6 +1,7 @@
 import { Proposal } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const AI_URL = import.meta.env.VITE_AI_URL || 'http://localhost:3000';
 
 
 export const api = {
@@ -56,6 +57,37 @@ export const api = {
       return res.json();
     } catch (e) {
       return [];
+    }
+  },
+
+  // AI Services
+  analyzeProposal: async (data: { title: string, description: string, amount: number }) => {
+    try {
+      const res = await fetch(`${AI_URL}/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('AI Analysis failed');
+      return res.json();
+    } catch (e) {
+      console.error(e);
+      return { score: 0, suggestions: ['AI Service is currently unavailable.'] };
+    }
+  },
+
+  getProposalComparison: async (data: { title: string, description: string, amount: string }) => {
+    try {
+      const res = await fetch(`${AI_URL}/api/ai/proposal-comparison`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('AI Comparison failed');
+      return res.json();
+    } catch (e) {
+      console.error(e);
+      return { insight: 'Comparison data unavailable.', confidence: 0 };
     }
   }
 };

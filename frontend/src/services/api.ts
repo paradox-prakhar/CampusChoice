@@ -1,17 +1,18 @@
 import { Proposal } from '../types';
 
-const API_URL = 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 
 export const api = {
   // Proposals
   getProposals: async (): Promise<Proposal[]> => {
     try {
-        const res = await fetch(`${API_URL}/proposals`);
-        if (!res.ok) throw new Error('Failed to fetch proposals');
-        return res.json();
+      const res = await fetch(`${API_URL}/proposals`);
+      if (!res.ok) throw new Error('Failed to fetch proposals');
+      return res.json();
     } catch (e) {
-        console.error(e);
-        return [];
+      console.error(e);
+      return [];
     }
   },
 
@@ -40,21 +41,21 @@ export const api = {
   // User
   getUserData: async (wallet: string): Promise<{ role: string, votes: string[] }> => {
     try {
-        const res = await fetch(`${API_URL}/users/${wallet}`);
-        if (!res.ok) return { role: 'VOTER', votes: [] };
-        return res.json();
+      const res = await fetch(`${API_URL}/users/${wallet}`);
+      if (!res.ok) return { role: 'VOTER', votes: [] };
+      return res.json();
     } catch (e) {
-        return { role: 'VOTER', votes: [] };
+      return { role: 'VOTER', votes: [] };
     }
   },
 
   getNotifications: async (wallet: string) => {
     try {
-        const res = await fetch(`${API_URL}/notifications/${wallet}`);
-        if (!res.ok) return [];
-        return res.json();
+      const res = await fetch(`${API_URL}/notifications/${wallet}`);
+      if (!res.ok) return [];
+      return res.json();
     } catch (e) {
-        return [];
+      return [];
     }
   }
 };

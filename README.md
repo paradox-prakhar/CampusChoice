@@ -19,10 +19,11 @@ VibeCraft DAO (CampusChoice) is a decentralized platform that empowers students 
 
 ## � Screenshots
 
-| Landing Page | Dashboard |
+ Landing Page  
 |<img width="1897" height="933" alt="image" src="https://github.com/user-attachments/assets/94923d4e-3da0-4167-bbde-f7555189c6b7" />
+|Dashboard 
 |<img width="1111" height="842" alt="image" src="https://github.com/user-attachments/assets/e8fb018d-0c8c-46cf-b4ba-67924777835c" />
-|
+
 
 
 | Proposal Creation | 

@@ -5,12 +5,17 @@ import App from './App'
 import { AppProvider } from './context/AppContext'
 import './index.css'
 
+import { Providers } from './wallet/providers'
+import '@rainbow-me/rainbowkit/styles.css';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </AppProvider>
+    <Providers>
+      <AppProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AppProvider>
+    </Providers>
   </React.StrictMode>,
 )

@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Button } from './ui/Button';
 import { Wallet, LogOut, Bell, Plus, LayoutDashboard } from 'lucide-react';
 import { formatAddress } from '../lib/utils';
+import { WalletConnectButton } from './WalletConnectButton';
 
 import { useState } from 'react';
 import { ConnectPurposeModal } from './ConnectPurposeModal';
@@ -124,10 +125,7 @@ export function Navbar() {
             </div>
           </div>
         ) : (
-          <Button onClick={() => setIsModalOpen(true)} isLoading={isLoading}>
-            <Wallet className="w-4 h-4 mr-2" />
-            Connect Wallet
-          </Button>
+          <WalletConnectButton />
         )}
       </div>
     </nav>

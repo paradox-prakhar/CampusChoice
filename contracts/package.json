@@ -1,0 +1,28 @@
+{
+  "name": "vibecraft-dao-contracts",
+  "version": "1.0.0",
+  "description": "DAO-based event proposal and voting system for Quai Network",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:quai-testnet": "npx hardhat run scripts/deploy.js --network quaiTestnet",
+    "deploy:quai-mainnet": "npx hardhat run scripts/deploy.js --network quaiMainnet",
+    "deploy:local": "npx hardhat run scripts/deploy.js --network localhost"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.0"
+  },
+  "keywords": [
+    "solidity",
+    "quai",
+    "dao",
+    "voting",
+    "hardhat"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0"
+  }
+}

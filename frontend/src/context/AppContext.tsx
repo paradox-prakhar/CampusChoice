@@ -7,7 +7,7 @@ interface AppContextType {
   user: User | null;
   proposals: Proposal[];
   isLoading: boolean;
-  connectWallet: (intendedRole?: string) => Promise<void>;
+  connectWallet: (intendedRole?: string, manualAddress?: string) => Promise<void>;
   disconnectWallet: () => void;
   createProposal: (data: { title: string, description: string, tags: string[], amount: string, recipient: string, duration: number, voting_model: string, venue?: string, host?: string }) => Promise<void>;
   voteOnProposal: (id: string) => Promise<void>;
@@ -135,18 +135,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setProposals(data);
   };
 
-  const connectWallet = async (intendedRole?: string) => {
+  const connectWallet = async (intendedRole?: string, manualAddress?: string) => {
     setIsLoading(true);
     try {
-      let addr = "";
-      if (window.ethereum) {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const accounts = await provider.send("eth_requestAccounts", []);
-        if (accounts.length > 0) addr = accounts[0];
-      } else {
-        // Fallback mock
-        addr = "0x" + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join("");
-        alert("Using Mock Wallet: " + addr);
+      let addr = manualAddress || "";
+      
+      if (!addr) {
+          if (window.ethereum) {
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const accounts = await provider.send("eth_requestAccounts", []);
+            if (accounts.length > 0) addr = accounts[0];
+          } else {
+            // Fallback mock
+            addr = "0x" + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join("");
+            alert("Using Mock Wallet: " + addr);
+          }
       }
 
       if (addr) {

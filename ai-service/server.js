@@ -72,6 +72,80 @@ app.post('/api/ai/proposal-comparison', (req, res) => {
     });
 });
 
+
+// Mock Database
+let proposals = [
+    {
+        id: '1',
+        title: 'Blockchain Workshop',
+        description: 'A workshop to teach basics of blockchain.',
+        amount: 500,
+        proposer: '0x123...',
+        votes: 10,
+        deadline: Date.now() + 86400000,
+        status: 'Active'
+    },
+    {
+        id: '2',
+        title: 'Campus Hackathon',
+        description: 'Annual campus hackathon event.',
+        amount: 2000,
+        proposer: '0x456...',
+        votes: 25,
+        deadline: Date.now() + 172800000,
+        status: 'Active'
+    }
+];
+let votes = [];
+let users = {};
+
+// Proposals Endpoints
+app.get('/proposals', (req, res) => {
+    res.json(proposals);
+});
+
+app.post('/proposals', (req, res) => {
+    const newProposal = {
+        id: (proposals.length + 1).toString(),
+        ...req.body,
+        votes: 0,
+        status: 'Active',
+        createdAt: new Date().toISOString()
+    };
+    proposals.push(newProposal);
+    res.status(201).json(newProposal);
+});
+
+// Votes Endpoints
+app.post('/votes', (req, res) => {
+    const { proposal_id, voter_wallet } = req.body;
+    
+    // Simple mock voting logic
+    const proposal = proposals.find(p => p.id === proposal_id);
+    if (!proposal) return res.status(404).json({ error: 'Proposal not found' });
+
+    votes.push({ proposal_id, voter_wallet, timestamp: new Date() });
+    proposal.votes += 1; // Quadratic voting logic handles on chain, this is just mock display
+    
+    // Update user mock data
+    if (!users[voter_wallet]) users[voter_wallet] = { role: 'VOTER', votes: [] };
+    users[voter_wallet].votes.push(proposal_id);
+
+    res.json({ message: 'Vote recorded', proposal });
+});
+
+// User Endpoints
+app.get('/users/:wallet', (req, res) => {
+    const { wallet } = req.params;
+    const user = users[wallet] || { role: 'VOTER', votes: [] };
+    res.json(user);
+});
+
+app.get('/notifications/:wallet', (req, res) => {
+    // Return empty notifications for now
+    res.json([]);
+});
+
 app.listen(port, () => {
-    console.log(`AI Service running on http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });

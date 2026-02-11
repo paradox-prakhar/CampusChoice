@@ -3,7 +3,8 @@ import { useApp } from '../context/AppContext';
 import { Button } from './ui/Button';
 import { Wallet, LogOut, Bell, Plus, LayoutDashboard } from 'lucide-react';
 import { formatAddress } from '../lib/utils';
-import { WalletConnectButton } from './WalletConnectButton';
+// import { WalletConnectButton } from './WalletConnectButton';
+import { WalletConnect } from './WalletConnect';
 
 import { useState } from 'react';
 import { ConnectPurposeModal } from './ConnectPurposeModal';
@@ -125,7 +126,7 @@ export function Navbar() {
             </div>
           </div>
         ) : (
-          <WalletConnectButton />
+          <WalletConnect />
         )}
       </div>
     </nav>

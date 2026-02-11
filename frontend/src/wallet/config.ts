@@ -23,10 +23,10 @@ export const config = getDefaultConfig({
   chains: [mainnet, polygon, optimism, arbitrum, base, quaiCyprus1, quaiOrchard],
   ssr: true, // If your dApp uses server side rendering (SSR)
   wallets: [
-    ...wallets,
     {
-      groupName: 'Other',
+      groupName: 'Recommended',
       wallets: [pelagusWallet],
     },
+    ...wallets,
   ],
 });

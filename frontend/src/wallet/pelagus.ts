@@ -17,20 +17,49 @@ export const pelagusWallet = ({}: any = {}): Wallet => ({
       ...injected({
           target: () => {
               if (typeof window !== 'undefined') {
-                  // Prioritize window.pelagus if available for correct detection
                   // @ts-ignore
-                  console.log('Checking for Pelagus:', window.pelagus);
+                  const pelagus = window.pelagus;
                   // @ts-ignore
-                  if (window.pelagus) {
-                      console.log('Pelagus found!');
-                      // @ts-ignore
-                      return window.pelagus;
+                  const ethereum = window.ethereum;
+
+                  console.log('Pelagus Wallet Check:', { pelagus: !!pelagus, ethereum: !!ethereum });
+
+                  let provider = undefined;
+
+                  if (pelagus) {
+                      console.log('Pelagus provider found directly.');
+                      provider = pelagus;
+                  } else if (ethereum?.isPelagus) {
+                      console.log('Pelagus found as window.ethereum (isPelagus=true).');
+                      provider = ethereum;
+                  } else if (ethereum) {
+                      console.log('Returning window.ethereum as fallback.');
+                      provider = ethereum;
                   }
-                  // Fallback to window.ethereum if pelagus specific object is not found (though less likely to work for specific features)
-                  // @ts-ignore
-                  console.log('Pelagus not found, falling back to window.ethereum:', window.ethereum);
-                  // @ts-ignore
-                  return window.ethereum;
+
+                  if (provider) {
+                      // Proxy the provider to intercept request calls
+                      return new Proxy(provider, {
+                          get(target, prop, receiver) {
+                              if (prop === 'request') {
+                                  return async (args: any) => {
+                                      // Intercept eth_requestAccounts and swap with quai_requestAccounts
+                                      if (args.method === 'eth_requestAccounts') {
+                                          console.log('Intercepting eth_requestAccounts -> quai_requestAccounts');
+                                          try {
+                                              return await target.request({ ...args, method: 'quai_requestAccounts' });
+                                          } catch (err) {
+                                              console.error('Error in quai_requestAccounts:', err);
+                                              throw err;
+                                          }
+                                      }
+                                      return target.request(args);
+                                  };
+                              }
+                              return Reflect.get(target, prop, receiver);
+                          }
+                      });
+                  }
               }
               return undefined;
           }

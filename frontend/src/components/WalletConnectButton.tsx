@@ -1,7 +1,7 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { WalletConnect } from './WalletConnect';
 
 export const WalletConnectButton = () => {
   return (
-    <ConnectButton />
+    <WalletConnect />
   );
 };

@@ -37,34 +37,41 @@ export function LandingPage() {
       />
 
       {/* Hero Section */}
-      <section className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none"></div>
+      <section className="flex-1 flex flex-col items-center justify-center text-center px-4 py-24 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-1/4 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-20 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] animate-pulse [animation-delay:2s] pointer-events-none" />
+        
+        <div className="relative z-10 max-w-5xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-6 animate-fade-in">
+                <Zap className="w-3 h-3" />
+                <span>EXPERIENCE THE FUTURE OF GOVERNANCE</span>
+            </div>
 
-        <h1 className="text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 pb-4 mb-6 max-w-4xl tracking-tight">
-          Vote for the Events You Want on Campus
-        </h1>
-        <p className="text-slate-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
-          The first decentralized platform where students decide the university's social calendar.
-          Propose events, secure funding, and govern with quadratic voting.
-        </p>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 pb-4 mb-6 max-w-4xl tracking-tighter animate-fade-in [animation-delay:200ms]">
+                University Social Calendar, <span className="text-cyan-400">Decentralized.</span>
+            </h1>
+            
+            <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in [animation-delay:400ms]">
+                Propose events, secure funding, and govern with quadratic voting. The first platform where students actually decide.
+            </p>
 
-
-
-        <div className="flex flex-col sm:flex-row gap-4 z-10">
-          {user ? (
-            <Link to="/dashboard">
-              <Button size="lg" className="rounded-full px-8 text-base">
-                Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
-          ) : (
-            <Button size="lg" onClick={() => setIsModalOpen(true)} className="rounded-full px-8 text-base bg-white text-slate-900 hover:bg-slate-200">
-              Connect Wallet & Vote
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in [animation-delay:600ms]">
+            {user ? (
+                <Link to="/dashboard">
+                <Button size="lg" className="rounded-full px-10 py-6 text-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border-0 shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all">
+                    Explore Dashboard <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                </Link>
+            ) : (
+                <Button size="lg" onClick={() => setIsModalOpen(true)} className="rounded-full px-10 py-6 text-lg bg-white text-slate-900 hover:bg-slate-200 shadow-xl transition-all">
+                Connect Wallet & Vote
+                </Button>
+            )}
+            <Button variant="ghost" size="lg" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="rounded-full px-8 text-base border border-white/10 hover:bg-white/5 transition-all">
+                Learn How It Works
             </Button>
-          )}
-          <Button variant="outline" size="lg" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="rounded-full px-8 text-base">
-            Learn How It Works
-          </Button>
+            </div>
         </div>
       </section>
 
@@ -80,53 +87,53 @@ export function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {/* Step 1 */}
-            <div className="relative">
-              <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-indigo-500/50 transition-all">
-                <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">
+            <div className="relative group animate-fade-in [animation-delay:100ms]">
+              <div className="glass-panel rounded-2xl p-6 h-full border border-white/5 hover:border-cyan-500/50 transition-all duration-500">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-6 shadow-lg shadow-cyan-500/20 group-hover:scale-110 transition-transform">
                   1
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Connect Your Wallet</h3>
+                <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Connect Wallet</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  Connect your MetaMask wallet to get started. Choose whether you want to vote on proposals or create your own event proposal.
+                  Securely link your identity. Choose whether you want to influence voting or propose new initiatives.
                 </p>
               </div>
             </div>
 
             {/* Step 2 */}
-            <div className="relative">
-              <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-purple-500/50 transition-all">
-                <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">
+            <div className="relative group animate-fade-in [animation-delay:200ms]">
+              <div className="glass-panel rounded-2xl p-6 h-full border border-white/5 hover:border-purple-500/50 transition-all duration-500">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-6 shadow-lg shadow-purple-500/20 group-hover:scale-110 transition-transform">
                   2
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Browse or Propose</h3>
+                <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Browse or Propose</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  Explore trending event proposals or create your own. Proposers submit event details, budget requirements, and timeline for community review.
+                  Explore high-impact proposals or lead innovation by drafting your own vision for campus life.
                 </p>
               </div>
             </div>
 
             {/* Step 3 */}
-            <div className="relative">
-              <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-green-500/50 transition-all">
-                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">
+            <div className="relative group animate-fade-in [animation-delay:300ms]">
+              <div className="glass-panel rounded-2xl p-6 h-full border border-white/5 hover:border-emerald-500/50 transition-all duration-500">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-6 shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
                   3
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Vote with Tokens</h3>
+                <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Quadratic Vote</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  Use quadratic voting to support proposals. Your voting power is the square root of tokens committed, ensuring fair representation for all students.
+                  Combat plutocracy. Use our fair governance model where impact is distributed across the community fairly.
                 </p>
               </div>
             </div>
 
             {/* Step 4 */}
-            <div className="relative">
-              <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-yellow-500/50 transition-all">
-                <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4">
+            <div className="relative group animate-fade-in [animation-delay:400ms]">
+              <div className="glass-panel rounded-2xl p-6 h-full border border-white/5 hover:border-orange-500/50 transition-all duration-500">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-6 shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform">
                   4
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Event Gets Funded</h3>
+                <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Instant Funding</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  When a proposal passes, funds are automatically released from the DAO treasury. The event organizer can proceed with making it happen!
+                  Automated smart contracts release funds instantly once a proposal passes. No delays, just progress.
                 </p>
               </div>
             </div>

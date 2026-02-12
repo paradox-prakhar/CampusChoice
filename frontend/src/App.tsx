@@ -18,7 +18,7 @@ function ProtectedRoute({ children, role }: { children: React.ReactNode, role?: 
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-indigo-500/30 pb-20">
+    <div className="min-h-screen text-slate-100 font-sans selection:bg-indigo-500/30 pb-20">
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />

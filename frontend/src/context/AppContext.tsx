@@ -217,6 +217,40 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   };
 
+  // Idle Timer Logic
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (user) {
+         timeoutId = setTimeout(() => {
+            disconnectWallet();
+            alert("Session Timeout: You have been disconnected due to inactivity.");
+         }, 15 * 60 * 1000); // 15 minutes
+      }
+    };
+
+    const handleActivity = () => {
+        resetTimer();
+    };
+
+    // Attach listeners
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('keydown', handleActivity);
+    window.addEventListener('click', handleActivity);
+
+    // Init timer
+    resetTimer();
+
+    return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+        window.removeEventListener('mousemove', handleActivity);
+        window.removeEventListener('keydown', handleActivity);
+        window.removeEventListener('click', handleActivity);
+    };
+  }, [user]); // Re-run when user connection status changes
+
   return (
     <AppContext.Provider value={{
       user,

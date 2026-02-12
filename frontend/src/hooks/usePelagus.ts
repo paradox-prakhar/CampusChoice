@@ -11,7 +11,7 @@ declare global {
 
 interface UsePelagusReturn {
   account: string | null;
-  connect: () => Promise<void>;
+  connect: () => Promise<string | null>;
   isInstalled: boolean;
   error: string | null;
 }
@@ -84,14 +84,14 @@ export function usePelagus(): UsePelagusReturn {
     }
   }, []);
 
-  const connect = async () => {
+  const connect = async (): Promise<string | null> => {
     setError(null);
     const provider = getProvider();
 
     if (!provider) {
         setError("Pelagus Wallet not installed");
         window.open("https://pelaguswallet.io/", "_blank");
-        return;
+        return null;
     }
 
     try {
@@ -102,11 +102,13 @@ export function usePelagus(): UsePelagusReturn {
 
       if (accounts && accounts.length > 0) {
         setAccount(accounts[0]);
+        return accounts[0];
       }
     } catch (err: any) {
       console.error("Pelagus connection error:", err);
       setError(err.message || "Connection failed");
     }
+    return null;
   };
 
   return { account, connect, isInstalled, error };

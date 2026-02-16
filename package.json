@@ -1,0 +1,14 @@
+{
+  "name": "vibecraft",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev -w packages/frontend",
+    "build:frontend": "npm run build -w packages/frontend",
+    "compile:contracts": "npm run compile -w packages/web3-logic",
+    "test:contracts": "npm run test -w packages/web3-logic"
+  }
+}

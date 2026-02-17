@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { EventDAOABI, getEventDAOAddress } from '@vibecraft/web3-logic';
+import { EventDAOABI, getEventDAOAddress } from '@/web3';
 
 // ── Types ──
 export interface OnChainProposal {

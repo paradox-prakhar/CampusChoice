@@ -115,7 +115,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!signer) return false;
     try {
       setTxPending(true);
-      await contractService.createProposal(signer, title, ipfsCID, durationSeconds);
+      const receipt = await contractService.createProposal(signer, title, ipfsCID, durationSeconds);
+      if (receipt) {
+        console.log("Proposal Created! Tx Hash:", receipt.hash);
+        alert(`Proposal Created! Tx Hash: ${receipt.hash}`);
+      }
       await fetchProposals();
       return true;
     } catch (err: any) {

@@ -1,4 +1,4 @@
-# VibeCraft DAO (CampusChoice)
+# CampusChoice
 
 ![VibeCraft DAO Banner](/frontend/public/vite.svg)
 
